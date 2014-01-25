@@ -6,12 +6,8 @@ def typed(func):
         return func
 
     argspec = inspect.getfullargspec(func)
-    arg_types = []
-    for key in argspec.args:
-        arg_types.append(argspec.annotations.get(key, None))
-
+    arg_types = [argspec.annotations.get(key, None) for key in argspec.args]
     varargs_type = argspec.annotations.get(argspec.varargs, None)
-
     varkw_type = argspec.annotations.get(argspec.varkw, None)
 
     def inner(*args, **kwargs):
@@ -27,4 +23,5 @@ def typed(func):
                 if not isinstance(value, varkw_type):
                     raise TypeError("kwarg type", key, value, varkw_type)
         return func(*args, **kwargs)
+
     return inner
